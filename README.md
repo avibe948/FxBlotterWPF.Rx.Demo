@@ -1,3 +1,6 @@
+![image](https://user-images.githubusercontent.com/33904196/227799506-ab3b0a5c-85a0-4e28-94ae-59f489515b10.png)
+
+
 As part of a preliminary interview process for a leading investment bank  extract the content of the blotter zip file which is included in this repo and improve the code as per the readme.docx instructions.
 Here is the description of my solution:
 
