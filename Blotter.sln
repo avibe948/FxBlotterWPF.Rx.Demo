@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.852
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blotter", "Blotter\Blotter.csproj", "{0D823B53-378F-4988-A694-6FF76BF8C3C4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PriceSupplier", "PriceSupplier\PriceSupplier.csproj", "{A1D91605-1165-4CF6-B61C-BC7E498FCD35}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0D823B53-378F-4988-A694-6FF76BF8C3C4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D823B53-378F-4988-A694-6FF76BF8C3C4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D823B53-378F-4988-A694-6FF76BF8C3C4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D823B53-378F-4988-A694-6FF76BF8C3C4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1D91605-1165-4CF6-B61C-BC7E498FCD35}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1D91605-1165-4CF6-B61C-BC7E498FCD35}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1D91605-1165-4CF6-B61C-BC7E498FCD35}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1D91605-1165-4CF6-B61C-BC7E498FCD35}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {3A3F4CDC-736E-48CB-B8E8-BB75E33945DE}
+	EndGlobalSection
+EndGlobal

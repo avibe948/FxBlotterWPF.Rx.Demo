@@ -1,0 +1,30 @@
+﻿<Window x:Class="Blotter.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:views="clr-namespace:Blotter.Views"
+        xmlns:viewmodels="clr-namespace:Blotter.ViewModels"        
+        mc:Ignorable="d"
+        Title="Blotter" Height="450" Width="800"
+        DataContext="{Binding Source= {x:Type viewmodels:BlotterViewModel}}">
+    <Window.Resources>
+        <Style x:Key="CollapsedIfZero" TargetType="{x:Type TextBlock}">
+            <Setter Property="Visibility" Value="Visible" />
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Price}" Value="0">
+                    <Setter Property="Visibility" Value="Collapsed" />
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <DataGrid x:Name="Grid" AutoGenerateColumns="False" ItemsSource="{Binding BlotterViewModelRows}">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Currency Pair" Binding="{Binding CurrencyPair}" IsReadOnly="False"/>
+                <DataGridTextColumn Header="Price" Binding="{Binding Price}" IsReadOnly="True" ElementStyle="{StaticResource CollapsedIfZero}"/>
+                <DataGridTextColumn Header="Info" Binding="{Binding Error}" IsReadOnly="True"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>
