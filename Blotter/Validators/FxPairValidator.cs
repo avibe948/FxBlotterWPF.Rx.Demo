@@ -22,7 +22,12 @@ namespace Blotter.Validators
             var isMatched =  regex.IsMatch(ccyPair);
             if(!isMatched)
             {
-                errors = new List<string>(1) { $"the currency pair {ccyPair} does not match the regEx pattern CCY1/CCY2 , i.e GBP/USD" };
+                errors = new List<string>(1) { $"the currency pair name {ccyPair} is invalid , it does not match the regEx pattern CCY1CCY2 , i.e GBPUSD. Valid pairs are available in the console." };
+                return false;
+            }
+            if(!PriceSupplier.PriceSourceCache.AvailableCurrencyPairs.ContainsKey(ccyPair))
+            {
+                errors = new List<string>(1) { $"the currency pair {ccyPair} is not supported by the price source cache." };
                 return false;
             }
             return true;

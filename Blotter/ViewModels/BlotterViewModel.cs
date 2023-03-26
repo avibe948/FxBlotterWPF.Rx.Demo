@@ -14,6 +14,16 @@ using Blotter.Validators;
 namespace Blotter.ViewModels
 {
 
+    #region documentation
+    /*
+    This code defines a view model for a blotter, which is a table that displays real-time prices 
+    for various currency pairs. The view model subscribes to a price source cache and updates 
+    the table with the latest prices for each currency pair. 
+    It also allows the user to add or remove rows from the table and change the currency pairs displayed
+     in each row. The code uses various classes and interfaces from the Blotter.
+     Models and PriceSupplier namespaces, as well as several .NET libraries for reactive programming 
+     and collections.*/
+    #endregion 
     public class BlotterViewModel : IBlotterViewModel
     {
         private static readonly IValidator<string> FxPairValidator = new FxPairValidator();

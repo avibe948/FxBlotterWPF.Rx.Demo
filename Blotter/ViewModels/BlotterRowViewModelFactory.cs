@@ -19,7 +19,6 @@ namespace Blotter.ViewModels
             return Create(new BlotterRow(null));
         }
 
-
-
+        
     }
 }

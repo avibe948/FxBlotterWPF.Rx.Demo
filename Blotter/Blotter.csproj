@@ -73,6 +73,7 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Model\BlotterRowModel.cs" />
+    <Compile Include="ViewModels\BlotterModelExtensions.cs" />
     <Compile Include="ViewModels\BlotterRowViewModel.cs" />
     <Compile Include="ViewModels\BlotterRowViewModelFactory.cs" />
     <Compile Include="ViewModels\BlotterViewModel.cs" />
@@ -123,8 +124,6 @@
       <Name>PriceSupplier</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="StreamSources\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

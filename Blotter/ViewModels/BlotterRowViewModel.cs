@@ -8,25 +8,18 @@ using System.Linq;
 
 namespace Blotter.ViewModels
 {
-    public static class BlotterModelExtensions
-    {
-        public static BlotterRow ToBlotterRow(this FxPairPrice fxPairPrice)
-        {
-            return new BlotterRow(fxPairPrice.CurrencyPair, fxPairPrice.Price);
-        }
-    }
     public class BlotterRowViewModel : INotifyPropertyChanged
     {
-        
+
         private static readonly IValidator<string> FxPairValidator = new FxPairValidator();
 
         public BlotterRowViewModel(BlotterRow row)
         {
             CurrencyPair = row?.CurrencyPair;
             Price = row?.Price;
-                       
+
         }
-     
+
         private string _currencyPair;
         private decimal? _price;
         private string _error;
@@ -65,11 +58,8 @@ namespace Blotter.ViewModels
             {
                 Error = string.Join(",", errors).TrimEnd(',');
             }
-            if (!PriceSourceCache.AvailableCurrencyPairs.ContainsKey(CurrencyPair))
-            {
-                Error = $"The FX ccy pair {CurrencyPair} is not supported by the price source cache";
-            }
-            if(errors.Any())
+        
+            if (errors.Any())
             {
                 Console.WriteLine(string.Join("\n", errors));
                 Console.WriteLine("List of supported currency pairs:");
