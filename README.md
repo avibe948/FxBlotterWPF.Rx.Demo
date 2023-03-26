@@ -19,10 +19,21 @@ Dependency injection can be added to improve inversion of control and manage the
 
 Description of the main classes in the blotter and the price supplier: 
 
-BlotterViewModel
-BlotterViewModel is a class that manages the data and behavior of a blotter view, which displays real-time prices for various currency pairs. The view model subscribes to a price source cache and updates the table with the latest prices for each currency pair. It also allows the user to add or remove rows from the table and change the currency pairs displayed in each row.
 
-Dependencies
+**Price Supplier**
+This reactive code provides a Price Supplier that allows subscribing to currency pair prices. It includes a PriceSourceCache class that implements the IPriceSourceCache interface and uses a dictionary to cache the prices of currency pairs. It also includes a static dictionary of available currency pairs and their default initial prices.
+
+The PriceSourceCache class takes a function that creates an IPriceSource object (to improve its testability) and uses it to subscribe to the price updates of a currency pair. If the currency pair is not in the cache, it creates a new BehaviorSubject object with the default initial price and subscribes to the price updates of the currency pair. It then adds the BehaviorSubject object to the cache and returns it as an IObservable object.
+
+The PriceSourceCache class also implements the IDisposable interface to dispose of all the BehaviorSubject objects in the cache when the object is disposed.
+
+The PriceSource class implements the IPriceSource interface and generates random price updates for a given currency pair. It takes a string representing the currency pair and a decimal representing the initial price. If the currency pair is USDJPY, it sets the rounding to 2. It then creates a new CancellationDisposable object and a CompositeDisposable object to manage the subscriptions. It uses the Observable.Create method to create a new observable sequence that generates random price updates for the currency pair. It rounds the price to the specified number of decimal places and adds it to the sequence using the OnNext method of the observer. It then waits for a random amount of time between 50 and 2000 milliseconds before generating the next price update. If the sequence is cancelled, it completes the sequence using the OnCompleted method of the observer. It then subscribes to the sequence using the Subscribe method and adds the subscription to the composite disposable. It also adds the cancellation disposable to the composite disposable and returns it as the result of the Subscribe method.
+
+This code uses the System, System.Reactive.Disposables, System.Reactive.Linq, and System.Threading.Tasks namespaces.
+
+**BlotterViewModel**
+BlotterViewModel is a class that manages the data and behavior of a blotter view, which displays simulated psuedo real-time prices for various currency pairs. The view model subscribes to a price source cache and updates the table with the latest prices for each currency pair. It also allows the user to add or remove rows from the table and change the currency pairs displayed in each row.
+
 The  BlotterViewModel class depends on the following namespaces and libraries:
 Blotter.Models : provides the BlotterRow  class used to represent a row in the blotter view.
 PriceSupplier : provides the IPriceSourceCache  interface used to subscribe to real-time price updates for various currency pairs.
@@ -49,16 +60,7 @@ BlotterRowViewModel object represents a row in the blotter view and contains pro
 The view can also interact with the view model by adding or removing rows or changing the currency pairs displayed in each row. To add a new row, the view should add a new BlotterRowViewModel  object to the BlotterViewModelRows collection. To remove a row, the view should remove the corresponding BlotterRowViewModel  object from the collection. To change the currency pair displayed in a row, the view should set the 
 CurrencyPair property of the corresponding BlotterRowViewModel object.
 
-Price Supplier
-This reactive code provides a Price Supplier that allows subscribing to currency pair prices. It includes a PriceSourceCache class that implements the IPriceSourceCache interface and uses a dictionary to cache the prices of currency pairs. It also includes a static dictionary of available currency pairs and their default initial prices.
 
-The PriceSourceCache class takes a function that creates an IPriceSource object (to improve its testability) and uses it to subscribe to the price updates of a currency pair. If the currency pair is not in the cache, it creates a new BehaviorSubject object with the default initial price and subscribes to the price updates of the currency pair. It then adds the BehaviorSubject object to the cache and returns it as an IObservable object.
-
-The PriceSourceCache class also implements the IDisposable interface to dispose of all the BehaviorSubject objects in the cache when the object is disposed.
-
-The PriceSource class implements the IPriceSource interface and generates random price updates for a given currency pair. It takes a string representing the currency pair and a decimal representing the initial price. If the currency pair is USDJPY, it sets the rounding to 2. It then creates a new CancellationDisposable object and a CompositeDisposable object to manage the subscriptions. It uses the Observable.Create method to create a new observable sequence that generates random price updates for the currency pair. It rounds the price to the specified number of decimal places and adds it to the sequence using the OnNext method of the observer. It then waits for a random amount of time between 50 and 2000 milliseconds before generating the next price update. If the sequence is cancelled, it completes the sequence using the OnCompleted method of the observer. It then subscribes to the sequence using the Subscribe method and adds the subscription to the composite disposable. It also adds the cancellation disposable to the composite disposable and returns it as the result of the Subscribe method.
-
-This code uses the System, System.Reactive.Disposables, System.Reactive.Linq, and System.Threading.Tasks namespaces.
 License
 This code is released under the MIT License. It should be used for educational purposes only. 
 
