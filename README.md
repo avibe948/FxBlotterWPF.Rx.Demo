@@ -1,6 +1,5 @@
-As par of an interview process for a leading large bank I have been requested to read the ReadMe.docx file and extract the content of the blotter zip file
-which is included in this repo and improve the code as per the readme instructions. 
-Here is the description of my solution. 
+As part of a preliminary interview process for a leading investment bank  extract the content of the blotter zip file which is included in this repo and improve the code as per the readme.docx instructions.
+Here is the description of my solution:
 
 The code was built with VS2017 (last update), .net framework version 4.8. The system.Reactive and System.Reactive.Core Nuget packages are required t run the code. 
 
