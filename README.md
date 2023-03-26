@@ -1,16 +1,15 @@
-Blotter namespace
-The blotter namespace includes classes that are responsible for the presentation of the Fx Boltter app. 
-The Fx blotter app allows the user to enter currency pairs and if the currency pair has a registered price source in the price source cache 
-it will present live randomly simulated Fx price for that currency pair. 
-An Fx currency pair can be entered more than once and the price must match (it is derived from the same price source). 
+The Blotter namespace contains classes that are responsible for the presentation of the Fx Blotter app. The app enables users to input currency pairs, and if a currency pair has a registered price source in the price source cache, it will display live simulated Fx prices for that currency pair. A currency pair can be entered more than once, and the price must match (it is derived from the same price source).
 
-The original app did not have a good seperation of concerns having some code in the view in Blotter.xaml.cs and did not use an Mvvm pattern and the price source observable was not implemented. it used task framework and a timer which are not necessary when you use RX. I therefor re-wrote the code in of the Price source and seperated the dependency of the BlotterRow model from being directly linked to the price source.
+The original app had some code in the view in Blotter.xaml.cs, and it did not use an MVVM pattern. Additionally, the price source observable was not implemented, and the app used the task framework and a timer, which are not necessary when using RX. As a result, the code for the price source was rewritten to separate the dependency of the BlotterRow model from being directly linked to the price source. The WPF app was also rewritten while preserving the original behavior of the blotter, including the initial default currency pairs, their default prices, the available currency pairs, and the default null blotter rows, which are assumed to be there to allow entering new currency pairs.
 
-I re-wrote the wpf app while preserving the original behaviour of the blotter , the initial default currency pairs , their default prices 
-and the supported available currency pairs and the default null blotter rows which I assume are there to allow entering new currency pairs. 
+The price source cache allows to use a single price source per currency pair and save memory whenever the users adds multiple blotter rows with the same currency pair.
+In a real app, the price source cache would be a singleton that emits events to a topic in a message bus, allowing multiple subscribers to receive price updates from the topic.
 
-The price source cache allows to reduce memory when multiple requests for the same pair are requested. 
-In a real app the price source cache will be a singleton which will emit events to a topic in a message bus allowing multiple subscribers to receive price updates from the topic. 
+Interfaces have been added to improve testability. 
+I did not use dependency injection framework due to the limited time I had to complete this task over the weekend. 
+Dependency injection can be added to improve inversion of control and manage the object lifecycle and instance creation. 
+
+Description of the main classes in the blotter and the price supplier: 
 
 BlotterViewModel
 BlotterViewModel is a class that manages the data and behavior of a blotter view, which displays real-time prices for various currency pairs. The view model subscribes to a price source cache and updates the table with the latest prices for each currency pair. It also allows the user to add or remove rows from the table and change the currency pairs displayed in each row.
