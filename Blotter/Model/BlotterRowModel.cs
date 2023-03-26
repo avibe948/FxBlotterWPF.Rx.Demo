@@ -10,10 +10,13 @@ namespace Blotter.Models
 
     public class BlotterRow
     {
-        public BlotterRow(string ccypair)
+        public BlotterRow(string ccypair, decimal? price=null)
         {
-            CurrencyPair = ccypair;            
+            CurrencyPair = ccypair;
+            if(price!=null)
+               Price = price.Value;
         }
+      
         public string CurrencyPair { get; private set; }
         public decimal Price { get; set; }
     

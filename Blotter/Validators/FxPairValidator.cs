@@ -23,10 +23,8 @@ namespace Blotter.Validators
             if(!isMatched)
             {
                 errors = new List<string>(1) { $"the currency pair {ccyPair} does not match the regEx pattern CCY1/CCY2 , i.e GBP/USD" };
-
+                return false;
             }
-            if (ccyPair.Substring(0, 3) == ccyPair.Substring(3, 3))
-                errors = new List<string>(1) { "Invalid currency pair" };
             return true;
         }
     }

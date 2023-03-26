@@ -73,6 +73,8 @@
       <SubType>Designer</SubType>
     </Page>
     <Compile Include="Model\BlotterRowModel.cs" />
+    <Compile Include="ViewModels\BlotterRowViewModel.cs" />
+    <Compile Include="ViewModels\BlotterRowViewModelFactory.cs" />
     <Compile Include="ViewModels\BlotterViewModel.cs" />
     <Compile Include="Validators\IValidator.cs" />
     <Compile Include="Validators\FxPairValidator.cs" />

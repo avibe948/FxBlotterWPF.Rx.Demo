@@ -1,5 +1,4 @@
 ﻿using Blotter.Models;
-using Blotter.Validators;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,106 +7,46 @@ using PriceSupplier;
 using System.Reactive.Linq;
 using System.Threading;
 using System.Reactive.Disposables;
-using System.ComponentModel;
+using System.Collections.Specialized;
+
+using Blotter.Validators;
 
 namespace Blotter.ViewModels
 {
 
-    public class BlotterRowViewModel : INotifyPropertyChanged
-    {
-        public BlotterRowViewModel(BlotterRow row)
-        {
-            CurrencyPair = row.CurrencyPair;
-            Price = row.Price;
-
-
-        }
-        public BlotterRowViewModel(FxPairPrice fxPairPrice)
-        {
-            CurrencyPair = fxPairPrice.CurrencyPair;
-            Price = fxPairPrice.Price;
-
-        }
-        private string _currencyPair;
-        private decimal? _price;
-        private string _error;
-
-        public string CurrencyPair
-        {
-            get => _currencyPair;
-            set
-            {
-                _currencyPair = value;
-                OnPropertyChanged(nameof(CurrencyPair));
-            }
-        }
-
-        public decimal? Price
-        {
-            get => _price;
-            set
-            {
-                _price = value;
-                OnPropertyChanged(nameof(Price));
-            }
-        }
-        public string Error { get => _error; set { _error = value; OnPropertyChanged(nameof(Error)); } }
-
-        public bool IsNotValid { get { return !string.IsNullOrEmpty(Error); } }
-
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-    }
-
-    public static class BlotterRowViewModelFactory
+    public class BlotterViewModel : IBlotterViewModel
     {
         private static readonly IValidator<string> FxPairValidator = new FxPairValidator();
 
-        /// IN A REAL APP USE AUTOMAP TO MAP A MODEL TO VIEW MODEL AND USE VALIDATOR
-        public static BlotterRowViewModel Create(BlotterRow row)
-        {
-            var vm = new BlotterRowViewModel(row);
-
-            if (!FxPairValidator.TryValidate(row.CurrencyPair, out IEnumerable<string> errors))
-            {
-                 vm.Error = string.Join(",",errors).TrimEnd(',');               
-            }
-            if ( !PriceSourceCache.AvailableCurrencyPairs.ContainsKey(row.CurrencyPair))
-            {
-                vm.Error = $"The currency pair {vm.CurrencyPair} is not supported by the price source cache";
-            }
-            return vm;
-        }
-    }
-    public class BlotterViewModel : IBlotterViewModel
-    {
         private BlotterRow[] DefaultBlotterRows = new[] { new BlotterRow("EURUSD"),
                 new BlotterRow("GBPUSD"),
-                new BlotterRow("USDJPY")};
+                new BlotterRow("USDJPY") };
 
         private readonly IPriceSourceCache _priceSourceCache;
         private TimeSpan _uiUpdateInterval;
         private CompositeDisposable _compositeSusbsriptions;
 
         public BlotterViewModel(IPriceSourceCache priceSourceCache, long uiUpdateInterval = 50)
-        {            
-            BlotterViewModelRows = new ObservableCollection<BlotterRowViewModel>(DefaultBlotterRows.Select(BlotterRowViewModelFactory.Create));
+        {
+            var emptyBlooterRows = Enumerable.Range(0, 9).Select(_=> BlotterRowViewModelFactory.CreateEmptyBlotterRow()); //create 9 empty rows just as before;
+            BlotterViewModelRows = new ObservableCollection<BlotterRowViewModel>(DefaultBlotterRows.Select(BlotterRowViewModelFactory.Create).Union(emptyBlooterRows));
+            
             _priceSourceCache = priceSourceCache;
             _uiUpdateInterval = TimeSpan.FromMilliseconds(50);
             _compositeSusbsriptions = new CompositeDisposable();
-            SubscribeToFxPriceCache(PriceSourceCache.AvailableCurrencyPairs.Keys);
+            SubscribeToFxPriceCache(BlotterViewModelRows.Where(blotterVmRow=>!blotterVmRow.IsNotValid).Select(b=>b.CurrencyPair));
+            BlotterViewModelRows.CollectionChanged += BlotterViewModelRows_CollectionChanged;
+            foreach ( var blotterRowVm in BlotterViewModelRows)
+            {
+                blotterRowVm.CurrencyPairChanged += BlotterRowViewModel_CurrencyPairChanged;
+            }
         }
         private void SubscribeToFxPriceCache(IEnumerable<string> currencyPairs)
-        {
+        {         
             var subscriptions = new Dictionary<string, IDisposable>();
 
             // Subscribe to each currency pair
-            foreach (var ccyPair in currencyPairs)
+            foreach (var ccyPair in currencyPairs.Where(ccy => ccy!=null))
             {                
                 var subscription = _priceSourceCache?.Subscribe(ccyPair)
                    .Select(update => update.Price)
@@ -116,15 +55,17 @@ namespace Blotter.ViewModels
                    .ObserveOn(SynchronizationContext.Current)
                    .Subscribe(price =>
                    {
-                       Console.WriteLine($"{ccyPair}: {price}");
-                       var row = BlotterViewModelRows.FirstOrDefault(r => r.CurrencyPair == ccyPair);
-                       if (row == null)
+                       var rows = BlotterViewModelRows.Where(r => r.CurrencyPair == ccyPair);
+                       if (! rows.Any())
                        {
-                           BlotterViewModelRows.Add(new BlotterRowViewModel(new FxPairPrice()));
+                           BlotterViewModelRows.Add(new BlotterRowViewModel(new FxPairPrice().ToBlotterRow()));
                        }
                        else
                        {
-                           row.Price = price;
+                           foreach (var row in rows)
+                           { 
+                                row.Price = price;
+                           }
                        }
                    });
 
@@ -134,7 +75,33 @@ namespace Blotter.ViewModels
         }
         public ObservableCollection<BlotterRowViewModel> BlotterViewModelRows { get; private set; }
         public long UiUpdateInterval { get => _uiUpdateInterval.Milliseconds; set => _uiUpdateInterval = new TimeSpan(value); }
+
+     
+        private void BlotterViewModelRows_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                foreach (var newItem in e.NewItems.OfType<BlotterRowViewModel>())
+                {
+                    newItem.CurrencyPairChanged += BlotterRowViewModel_CurrencyPairChanged;
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                foreach (var oldItem in e.OldItems.OfType<BlotterRowViewModel>())
+                {
+                    oldItem.CurrencyPairChanged -= BlotterRowViewModel_CurrencyPairChanged;
+                }
+            }
+        }
+
+        private void BlotterRowViewModel_CurrencyPairChanged(object sender, EventArgs e)
+        {
+            var blotterRowViewModel = (BlotterRowViewModel)sender;
+            
+            var currencyPair = blotterRowViewModel.CurrencyPair;
+
+            SubscribeToFxPriceCache(new[] { currencyPair });
+        }
     }
-
-
-}
+   }
