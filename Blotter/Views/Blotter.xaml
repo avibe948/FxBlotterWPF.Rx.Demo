@@ -23,7 +23,7 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Currency Pair" Binding="{Binding CurrencyPair}" IsReadOnly="False"/>
                 <DataGridTextColumn Header="Price" Binding="{Binding Price, Mode=OneWay}"  ElementStyle="{StaticResource CollapsedIfZero}"/>
-                <DataGridTextColumn Header="Error" Binding="{Binding Error, Mode=OneWay}"/>
+                <DataGridTextColumn Header="Info" Binding="{Binding Error, Mode=OneWay}"/>
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
