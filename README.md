@@ -2,6 +2,8 @@ As par of an interview process for a leading large bank I have been requested to
 which is included in this repo and improve the code as per the readme instructions. 
 Here is the description of my solution. 
 
+The code was built with VS2017 (last update), .net framework version 4.8. The system.Reactive and System.Reactive.Core Nuget packages are required t run the code. 
+
 The Blotter namespace contains classes that are responsible for the presentation of the Fx Blotter app. The app enables users to input currency pairs, and if a currency pair has a registered price source in the price source cache, it will display live simulated Fx prices for that currency pair. A currency pair can be entered more than once, and the price must match (it is derived from the same price source).
 
 The original app had some code in the view in Blotter.xaml.cs, and it did not use an MVVM pattern. Additionally, the price source observable was not implemented, and the app used the task framework and a timer, which are not necessary when using RX. As a result, the code for the price source was rewritten to separate the dependency of the BlotterRow model from being directly linked to the price source. The WPF app was also rewritten while preserving the original behavior of the blotter, including the initial default currency pairs, their default prices, the available currency pairs, and the default null blotter rows, which are assumed to be there to allow entering new currency pairs.
