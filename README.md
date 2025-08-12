@@ -97,4 +97,3 @@ PriceSourceCache_Dispose_DisposesAllObservables: Tests that the Dispose  method 
 Alternative tile look (code is committed locally but will be submitted to the repo immidiatly after the interview).
 ![image](https://user-images.githubusercontent.com/33904196/228096275-db1f86b4-cf8f-4e84-8a4d-35453c3d4172.png)
 
-The code and the documentation was written by Avi Ben-Margi with the help of ChatGPT 4.0 and its VsCode extension
